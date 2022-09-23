@@ -1,0 +1,87 @@
+definition {
+
+	property testray.main.component.name = "Blogs";
+
+	setUp {
+		TestCase.setUpPortalInstance();
+
+		User.firstLoginPG();
+
+		JSONLayout.addPublicLayout(
+			groupName = "Guest",
+			layoutName = "Blogs Page");
+
+		JSONLayout.addWidgetToPublicLayout(
+			column = "1",
+			groupName = "Guest",
+			layoutName = "Blogs Page",
+			widgetName = "Blogs");
+
+		Navigator.gotoPage(pageName = "Blogs Page");
+
+		Blogs.addEntry(
+			entryContent = "Blog Entry Content1.",
+			entryTitle = "Test Blog1");
+	}
+
+	tearDown {
+		var testPortalInstance = PropsUtil.get("test.portal.instance");
+
+		if ("${testPortalInstance}" == "true") {
+			PortalInstances.tearDownCP();
+		}
+		else {
+			BlogsEntry.tearDownCP();
+
+			Blogs.tearDownConfigurationDisplaySettingsPG(
+				pageName = "Blogs Page",
+				portletName = "Blogs");
+
+			JSONLayout.deletePublicLayout(
+				groupName = "Guest",
+				layoutName = "Blogs Page");
+
+			PagesAdmin.tearDownCP();
+		}
+	}
+
+	@description = "Can Search Blogs"
+	test CanSearchBlogs {
+		task ("the User searches for the Blog first entry") {
+			JSONBlog.addEntry(
+				entryContent = "Blog Entry Content2.",
+				entryTitle = "Test Blog2");
+
+			Navigator.openURL();
+
+			SearchPortlets.searchEmbedded(searchTerm = "&quot;Test Blog 1&quot;");
+		}
+
+		task ("Assert the searched content") {
+			SearchResultPortlet.viewSearchResults(
+				searchAssetSummary = "Blog Entry Content1.",
+				searchAssetTitle = "Test Blog1",
+				searchAssetType = "Blogs Entry");
+
+			SearchResultPortlet.viewSearchResultNotPresent(
+				searchAssetTitle = "Test Blog2",
+				searchAssetType = "Blogs Entry");
+		}
+
+		task ("the User searches for the Blog second entry") {
+			SearchPortlets.searchEmbedded(searchTerm = "&quot;Test Blog 2&quot;");
+		}
+
+		task ("Assert the searched content") {
+			SearchResultPortlet.viewSearchResults(
+				searchAssetSummary = "Blog Entry Content2.",
+				searchAssetTitle = "Test Blog2",
+				searchAssetType = "Blogs Entry");
+
+			SearchResultPortlet.viewSearchResultNotPresent(
+				searchAssetTitle = "Test Blog1",
+				searchAssetType = "Blogs Entry");
+		}
+	}
+
+}
