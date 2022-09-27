@@ -1,37 +1,40 @@
 @component-name = "portal-document-management"
 definition {
-    property testray.main.component.name = "Document Management";
 
-    setUp {
-        TestCase.setUpPortalInstance();
+	property testray.main.component.name = "Document Management";
 
-        User.firstLoginPG();
+	setUp {
+		TestCase.setUpPortalInstance();
 
-        Navigator.openURL();
+		User.firstLoginPG();
 
-        task ("Creating a Page with a Documents And Media Portlet") {
+		Navigator.openURL();
+
+		task ("Creating a Page with a Documents And Media Portlet") {
 			JSONLayout.addPublicLayout(
 				groupName = "Guest",
 				layoutName = "Documents and Media Page");
 
-            JSONLayout.addWidgetToPublicLayout(
-                column = "1",
+			JSONLayout.addWidgetToPublicLayout(
+				column = "1",
 				groupName = "Guest",
 				layoutName = "Documents and Media Page",
 				widgetName = "Documents and Media");
-        }
-        task("Go to Documents and Media Page"){
-            Navigator.gotoPage(pageName = "Documents and Media Page");
-        }
-    }
-     tearDown {
+		}
+
+		task ("Go to Documents and Media Page") {
+			Navigator.gotoPage(pageName = "Documents and Media Page");
+		}
+	}
+
+	tearDown {
 		var testPortalInstance = PropsUtil.get("test.portal.instance");
 
 		if ("${testPortalInstance}" == "true") {
 			PortalInstances.tearDownCP();
 		}
 		else {
-            DMDocument.tearDownCP();
+			DMDocument.tearDownCP();
 
 			JSONLayout.deletePublicLayout(
 				groupName = "Guest",
@@ -39,47 +42,44 @@ definition {
 
 			User.logoutPG();
 		}
-     }
+	}
 
-    @description = "Can Create a Documents and Media"
-    @priority = "5"
-    test CanCreateDM {
-        task("Creating a document"){
-            ProductMenu.gotoPortlet(
-			    category = "Content & Data",
-			    portlet = "Documents and Media");
+	@description = "Can Create a Documents and Media"
+	@priority = "5"
+	test CanCreateDM {
+		task ("Creating a document") {
+			ProductMenu.gotoPortlet(
+				category = "Content & Data",
+				portlet = "Documents and Media");
 
-		    DMDocument.addCP(
-			    dmDocumentDescription = "DM Document Description",
-			    dmDocumentFile = "zoro.jpeg",
-			    dmDocumentTitle = "DMTest");
-        }
-        task("Go to the page and assert the content"){
-            Navigator.gotoPage(pageName = "Documents and Media Page");
+			DMDocument.addCP(
+				dmDocumentDescription = "DM Document Description",
+				dmDocumentFile = "zoro.jpeg",
+				dmDocumentTitle = "DMTest");
+		}
 
-            DMNavigator.gotoDocumentCP(dmDocumentTitle = "DMTest");
+		task ("Go to the page and assert the content") {
+			Navigator.gotoPage(pageName = "Documents and Media Page");
 
-            DMDocument.viewCP(dmDocumentTitle = "DMTest");
-        }
-    }
+			DMNavigator.gotoDocumentCP(dmDocumentTitle = "DMTest");
 
-    @description = "Can Edit a Documents and Media"
-    @priority = "5"
-    test CanEditDM {
+			DMDocument.viewCP(dmDocumentTitle = "DMTest");
+		}
+	}
 
+	@description = "Can Delete a Documents and Media"
+	@priority = "5"
+	test CanDeleteDM {
+	}
 
-    }
-    @description = "Can Delete a Documents and Media"
-    @priority = "5"
-    test CanDeleteDM {
+	@description = "Can Download a Documents and Media"
+	@priority = "5"
+	test CanDownloadDM {
+	}
 
-
-    }
-    @description = "Can Download a Documents and Media"
-    @priority = "5"
-    test CanDownloadDM {
-
-
-    }
+	@description = "Can Edit a Documents and Media"
+	@priority = "5"
+	test CanEditDM {
+	}
 
 }
