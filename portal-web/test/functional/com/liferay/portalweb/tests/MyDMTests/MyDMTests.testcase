@@ -1,0 +1,79 @@
+@component-name = "portal-document-management"
+definition {
+
+	property testray.main.component.name = "Document Management";
+
+	setUp {
+		TestCase.setUpPortalInstance();
+
+		User.firstLoginPG();
+
+		Navigator.openURL();
+
+		task ("Creating a Page with a Documents And Media Portlet") {
+			JSONLayout.addPublicLayout(
+				groupName = "Guest",
+				layoutName = "Documents and Media Page");
+
+			JSONLayout.addWidgetToPublicLayout(
+				column = "1",
+				groupName = "Guest",
+				layoutName = "Documents and Media Page",
+				widgetName = "Documents and Media");
+		}
+
+		task ("Go to Documents and Media Page") {
+			Navigator.gotoPage(pageName = "Documents and Media Page");
+
+			JSONDocument.addFileWithUploadedFile(
+				dmDocumentTitle = "DMTest",
+				groupName = "Guest",
+				mimeType = "image/jpeg",
+				sourceFileName = "Commerce_Black.jpeg");
+		}
+	}
+
+	tearDown {
+		var testPortalInstance = PropsUtil.get("test.portal.instance");
+
+		if ("${testPortalInstance}" == "true") {
+			PortalInstances.tearDownCP();
+		}
+		else {
+			DMDocument.tearDownCP();
+
+			JSONLayout.deletePublicLayout(
+				groupName = "Guest",
+				layoutName = "Documents and Media Page");
+
+			User.logoutPG();
+		}
+	}
+
+	@description = "Can Edit a Documentsg and Media"
+	@priority = "5"
+	test CanEditDM {
+		task ("Given The DM Portlet And The Document The user will Edit the Document") {
+			ProductMenu.gotoPortlet(
+				category = "Content & Data",
+				portlet = "Documents and Media");
+
+			DMDocument.editCP(
+				dmDocumentFileEdit = "Document_2.jpeg",
+				dmDocumentFileNameEdit = "Document_2.jpeg",
+				dmDocumentTitle = "DMTest",
+				dmDocumentTitleEdit = "DMTest Edited");
+		}
+		task("Assert the altered content"){
+			Navigator.gotoPage(pageName = "Documents and Media Page");
+
+			DMNavigator.gotoDocumentCP(dmDocumentTitle = "DMTest Edited");
+
+			DMDocument.viewCP(
+				dmDocumentFile = "Document_2",
+				dmDocumentFileName = "Document_2",
+				dmDocumentTitle = "DMTest Edited");
+		}
+	}
+
+}
