@@ -57,30 +57,31 @@ definition {
 	}
 
 	@description = "Can Delete a Documents and Media"
-    @priority = "5"
-    test CanDeleteDM {
-		task("the User delete a document and media"){
+	@priority = "5"
+	test CanDeleteDM {
+		task ("the User delete a document and media") {
 			ProductMenu.gotoPortlet(
 				category = "Content & Data",
 				portlet = "Documents and Media");
 
 			DMDocument.deleteCP(dmDocumentTitle = "DMTest");
 		}
-		task("Assert that one of the contents is still there"){
+
+		task ("Assert that one of the contents is still there") {
 			Navigator.gotoPage(pageName = "Documents and Media Page");
 
 			DMNavigator.gotoDocumentCP(dmDocumentTitle = "DMTest");
 
 			DMDocument.viewCP(dmDocumentTitle = "DMTest");
 		}
-		task("Assert the content that was deleted is not there"){
+
+		task ("Assert the content that was deleted is not there") {
 			ProductMenu.gotoPortlet(
 				category = "Content & Data",
 				portlet = "Documents and Media");
 
 			DMDocument.cannotViewCP(dmDocumentTitle = "DMTest2");
-		
 		}
-    }
+	}
 
 }
