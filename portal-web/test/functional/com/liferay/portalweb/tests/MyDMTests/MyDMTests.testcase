@@ -25,7 +25,8 @@ definition {
 		task ("Go to Documents and Media Page") {
 			Navigator.gotoPage(pageName = "Documents and Media Page");
 		}
-		task("Add Files using API"){
+
+		task ("Add Files using API") {
 			JSONDocument.addFileWithUploadedFile(
 				dmDocumentTitle = "DMTest",
 				groupName = "Guest",
