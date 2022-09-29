@@ -24,7 +24,8 @@ definition {
 
 		task ("Go to Documents and Media Page") {
 			Navigator.gotoPage(pageName = "Documents and Media Page");
-
+		}
+		task("Add Files using API"){
 			JSONDocument.addFileWithUploadedFile(
 				dmDocumentTitle = "DMTest",
 				groupName = "Guest",
@@ -64,7 +65,7 @@ definition {
 				category = "Content & Data",
 				portlet = "Documents and Media");
 
-			DMDocument.deleteCP(dmDocumentTitle = "DMTest");
+			DMDocument.deleteCP(dmDocumentTitle = "DMTest2");
 		}
 
 		task ("Assert that one of the contents is still there") {
