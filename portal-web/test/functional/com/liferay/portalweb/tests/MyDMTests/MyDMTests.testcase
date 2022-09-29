@@ -28,8 +28,8 @@ definition {
 			JSONDocument.addFileWithUploadedFile(
 				dmDocumentTitle = "DMTest",
 				groupName = "Guest",
-				mimeType = "image/jpeg",
-				sourceFileName = "Commerce_Black.jpeg");
+				mimeType = "image/jpg",
+				sourceFileName = "Commerce_Black.jpg");
 		}
 	}
 
@@ -64,14 +64,15 @@ definition {
 				dmDocumentTitle = "DMTest",
 				dmDocumentTitleEdit = "DMTest Edited");
 		}
-		task("Assert the altered content"){
+
+		task ("Assert the altered content") {
 			Navigator.gotoPage(pageName = "Documents and Media Page");
 
 			DMNavigator.gotoDocumentCP(dmDocumentTitle = "DMTest Edited");
 
 			DMDocument.viewCP(
-				dmDocumentFile = "Document_2",
-				dmDocumentFileName = "Document_2",
+				dmDocumentFile = "Document_2.jpeg",
+				dmDocumentFileName = "Document_2.jpeg",
 				dmDocumentTitle = "DMTest Edited");
 		}
 	}
