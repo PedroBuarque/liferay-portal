@@ -1,0 +1,81 @@
+@component-name = "portal-document-management"
+definition {
+
+	property testray.main.component.name = "Document Management";
+
+	setUp {
+		TestCase.setUpPortalInstance();
+
+		User.firstLoginPG();
+
+		Navigator.openURL();
+
+		task ("Creating a Page with a Documents And Media Portlet") {
+			JSONLayout.addPublicLayout(
+				groupName = "Guest",
+				layoutName = "Documents and Media Page");
+
+			JSONLayout.addWidgetToPublicLayout(
+				column = "1",
+				groupName = "Guest",
+				layoutName = "Documents and Media Page",
+				widgetName = "Documents and Media");
+		}
+
+		task ("Go to Documents and Media Page") {
+			Navigator.gotoPage(pageName = "Documents and Media Page");
+		}
+
+		task ("Create Document and Media with a image") {
+			JSONDocument.addFileWithUploadedFile(
+				dmDocumentTitle = "DMTest2",
+				groupName = "Guest",
+				mimeType = "image/jpg",
+				sourceFileName = "Commerce_Black.jpg");
+
+			JSONDocument.addFileWithUploadedFile(
+				dmDocumentTitle = "DMTest",
+				groupName = "Guest",
+				mimeType = "image/jpg",
+				sourceFileName = "Commerce_Blue.jpg");
+		}
+	}
+
+	tearDown {
+		var testPortalInstance = PropsUtil.get("test.portal.instance");
+
+		if ("${testPortalInstance}" == "true") {
+			PortalInstances.tearDownCP();
+		}
+		else {
+			DMDocument.tearDownCP();
+
+			JSONLayout.deletePublicLayout(
+				groupName = "Guest",
+				layoutName = "Documents and Media Page");
+
+			User.logoutPG();
+		}
+	}
+
+	@description = "Can Download a Documents and Media"
+	@priority = "5"
+	test CanDownloadDM {
+		task ("Go To The Page and Download the Content of the DM") {
+			Navigator.gotoPage(pageName = "Documents and Media Page");
+
+			DMDocument.enableActionsMenuOnPortlet();
+
+			DMDocument.downloadCP(
+				dmDocumentSize = "88 KB",
+				dmDocumentTitle = "DMTest");
+		}
+
+		task ("Assert the downloaded content") {
+			DMDocument.assertFileNameFromTempFolder(fileName = "Commerce_Blue.jpg");
+
+			DMDocument.assertNoFileNameFromTempFolder(fileName = "Commerce_Black.jpg");
+		}
+	}
+
+}
